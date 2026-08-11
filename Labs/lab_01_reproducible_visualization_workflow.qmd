@@ -305,7 +305,7 @@ ggsave(
 
 ```
 
-# Reflection Questions
+## Reflection Questions
 
 Answer each question in complete sentences.
 
