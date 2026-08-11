@@ -1,0 +1,13 @@
+county,region,adult_population,asthma_visits,vaccination_rate,asthma_visit_rate
+A,North,42315,1284,68.4,30.35
+B,South,67842,2176,72.1,32.07
+C,Central,31576,947,75.3,29.99
+D,Central,89421,3052,69.8,34.13
+E,North,54738,1693,78.6,30.93
+F,North,112605,3841,73.5,34.11
+G,South,76193,2487,64.2,32.64
+H,Central,38947,1126,76.8,28.91
+I,South,95284,3317,70.6,34.81
+J,South,61729,1954,66.9,31.65
+K,North,47856,1438,74.1,30.05
+L,Central,83514,2731,85.3,32.7
