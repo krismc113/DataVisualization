@@ -305,23 +305,6 @@ ggsave(
 
 ```
 
-# Part 17: Git and GitHub
-
-Complete the following:
-
-1. Open the Git pane.
-2. Review the changed files.
-3. Stage the files associated with this lab.
-4. Commit using a meaningful message.
-5. Push to GitHub.
-6. Open the repository online and verify that the files appear.
-
-Suggested commit message:
-
-```text
-Complete Lab 1 reproducible workflow
-```
-
 # Reflection Questions
 
 Answer each question in complete sentences.
