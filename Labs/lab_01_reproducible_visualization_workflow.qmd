@@ -10,7 +10,7 @@ execute:
   message: false
 ---
 
-## Load Packages
+# Load Packages
 
 ```{r load-packages}
 
@@ -31,7 +31,7 @@ execute:
 
 ```
 
-## Project Root
+# Project Root
 
 ```{r project-root}
 
@@ -42,16 +42,16 @@ here()
 Answer:
 
 1. What path was printed?
-  "/Users/kmcdaniel/Desktop/DataVisualization"
+  **"/Users/kmcdaniel/Desktop/DataVisualization"**
   
 2. Does it point to the correct course project?
-  Yes
+  **Yes**
   
 3. Why is working from an R Project preferable to manually setting the working directory?
-  Easier and more efficient
+  **Easier and more efficient**
 
 
-## Inspect the Folder Structure
+# Inspect the Folder Structure
 
 ```{r inspect-structure}
 
@@ -59,26 +59,8 @@ dir_ls()
 
 ```
 
-## Create a Simulated Public Health Dataset
+# Create a Simulated Public Health Dataset
 
-Create a reproducible county-level dataset with the following variables:
-
-- `county`
-- `region`
-- `adult_population`
-- `asthma_visits`
-- `vaccination_rate`
-- `asthma_visit_rate`
-
-Requirements:
-
-- Include 12 fictional counties.
-- Include three regions: North, Central, and South.
-- Use `set.seed(716)`.
-- Generate plausible values for population, visits, and vaccination coverage.
-- Calculate asthma visit rate per 100,000.
-- Round the rate to one decimal place.
-- Use tidy formatting.
 
 ```{r simulation}
 
@@ -96,16 +78,22 @@ vaccination_rate = c("68.4", "72.1", "75.3", "69.8", "78.6", "73.5", "64.2", "76
 asthma_visit_rate = c("30.35", "32.07", "29.99", "34.13", "30.93", "34.11", "32.64", "28.91", "34.81", "31.65", "30.05", "32.70")
 ) %>%
   mutate(
-    adult_population = as.numeric(gsub(",", "", adult_population)),
-    asthma_visits    = as.numeric(gsub(",", "", asthma_visits)),
-    vaccination_rate = as.numeric(vaccination_rate),
-    asthma_visit_rate = as.numeric(asthma_visit_rate)
+    adult_population = as.numeric(
+      gsub(",", "", adult_population)
+      ),
+    asthma_visits = as.numeric(
+      gsub(",", "", asthma_visits)
+      ),
+    vaccination_rate = as.numeric(
+      vaccination_rate),
+    asthma_visit_rate = as.numeric(
+      asthma_visit_rate)
   )
 
 ```
 
 
-## Save Dataset
+# Save Dataset
 
 ```{r dataset}
 
@@ -114,25 +102,27 @@ write_csv(county_health_data, here("Data", "county_health_data.csv"))
 ```
 
 
-# Part 9: Remove and Re-Import the Dataset
+# Remove and Re-Import the Dataset
 
 
 ```{r remove/import-dataset}
 
 rm(county_health_data)
 
-county_health_data <- read_csv(here("Data", "county_health_data.csv"))
+county_health_data <- read_csv(
+  here("Data", "county_health_data.csv"))
 
 ```
 
-## Inspect the Data
+# Inspect the Data
 
 ```{r inspect-dataset}
 
 glimpse(county_health_data)
 
 ```
-## One Row Summary
+
+# One Row Summary
 
 ```{r onerow-summary}
 
@@ -153,33 +143,22 @@ one_row <- data.frame(county_number, vr_mean, avr_median)
 Answer:
 
 1. What does one row represent?
-  One observation
+  **One observation**
   
 2. How many variables are included?
-  3
+  **3**
   
 3. Which variables are categorical?
-  County
+  **County**
 
 4. Which variables are numeric?
-  Vaccination rates and Asthma visit rates
+  **Vaccination rates and Asthma visit rates**
   
 5. Which variable should be used to compare asthma burden fairly across counties?
-  Asthma visit rate
+  **Asthma visit rate**
 
 ## Ranked Vaccination Bar Chart
 
-Create a horizontal bar chart ranking counties by vaccination coverage.
-
-Requirements:
-
-- Reorder counties by vaccination rate.
-- Add a dashed reference line at 80%.
-- Use an informative title and subtitle.
-- Label the y-axis as vaccination coverage.
-- State that the values are simulated.
-- Use a readable theme.
-- Store the graph as `vaccination_plot`.
 
 ```{r vaccination-plot}
 
@@ -212,13 +191,13 @@ vaccination_plot
 
 ```
 
-## Interpret the Figure
+# Interpret the Figure
 
 1. What pattern does the figure show?
 2. Which counties appear furthest below the target?
 3. What context would be required before using this graph for a real decision?
 
-The figure shows that vaccination coverage varies across counties, with rates ranging from about 64% to 85%. Most counties are below the 80% target, while only County L exceeds it. Context, such as available resources, access to care, socioeconomic makeup, type of area, and other community factors, should be considered.
+**The figure shows that vaccination coverage varies across counties, with rates ranging from about 64% to 85%. Most counties are below the 80% target, while only County L exceeds it. Context, such as available resources, access to care, socioeconomic makeup, type of area, and other community factors, should be considered.**
 
 ## Save the Vaccination Figure
 
@@ -237,7 +216,7 @@ ggsave(
 
 ## Independent Visualization
 
-- Scatterplot of adult population and asthma visits,
+- Scatterplot of adult population and asthma visits
 
 ```{r independent-plot}
 
@@ -313,111 +292,28 @@ Answer each question in complete sentences.
 
 Why is reproducibility important in public health research and practice?
 
-**Response:**  
+**Reproducibility is important in public health research and practice, because all information readily provided to the general public should be accruate, transparent, and usable. It allows others to verify the results and understand how conclusions were reached.  **  
 
 ## Question 2
 
 How does a consistent project structure improve collaboration and review?
 
-**Response:**  
+**When a project structure is consistent, it allows collaborators and reviewers to easily understand the information. It makes it easier to work together and reproduce the analysis.**  
 
 ## Question 3
 
 Why are relative paths preferable to absolute paths?
 
-**Response:**  
+**Relative paths are preferable to absolute paths, because they allow a project to work on different computers without changing the file path. This makes a project more portable and reproducible.**  
 
 ## Question 4
 
 How does GitHub contribute to reproducibility?
 
-**Response:**  
+**GitHub allows for version control, which keeps the work done in R-studio up to date for other people to use and reference. This allows for people to reproduce a project with the exact tools used for the original project.**  
 
 ## Question 5
 
 What was the most challenging part of the lab?
 
-**Response:**  
-
-# Deliverables
-
-Submit or push:
-
-- [ ] completed student lab QMD
-- [ ] rendered HTML file
-- [ ] `data/county_health_data.csv`
-- [ ] `figures/lab01_vaccination_coverage.png`
-- [ ] `figures/lab01_independent_visualization.png`
-- [ ] completed reflections
-- [ ] meaningful Git commit
-- [ ] updated GitHub repository
-
-# Submission Checklist
-
-Before submitting, confirm:
-
-- [ ] the project opens from the `.Rproj` file
-- [ ] the QMD renders without errors
-- [ ] all required folders exist
-- [ ] the dataset is inside `data/`
-- [ ] relative paths are used
-- [ ] both visualizations display correctly
-- [ ] both figures are saved inside `figures/`
-- [ ] reflections are complete
-- [ ] work is committed and pushed
-- [ ] no private or sensitive information was uploaded
-
-# Troubleshooting
-
-# Dataset Cannot Be Found
-
-Check:
-
-- file location,
-- spelling,
-- capitalization,
-- project root,
-- and use of `here()`.
-
-# Package Is Missing
-
-Install the package in the Console:
-
-```r
-install.packages("package_name")
-```
-
-Do not place package-installation commands in the final lab.
-
-# Quarto Will Not Render
-
-Read the first error message and check:
-
-- commas,
-- parentheses,
-- quotation marks,
-- object names,
-- and package availability.
-
-# Git Pane Is Missing
-
-Confirm:
-
-- Git is installed,
-- the project is a Git repository,
-- and the correct project is open.
-
-# Stretch Challenge
-
-Improve one graph by adding one of the following:
-
-- direct labels,
-- a colorblind-friendly palette,
-- an annotation,
-- or a meaningful highlight.
-
-Write two sentences explaining why the change improves communication.
-
-# Looking Ahead
-
-In Lab 2, you will use the Grammar of Graphics to build and compare several visualization types for different public health questions.
+**The most challenging part of the lab was setting the directory and making sure if something was pulled, the code actually ran.**  
