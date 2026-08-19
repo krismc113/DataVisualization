@@ -90,6 +90,8 @@ asthma_visit_rate = c("30.35", "32.07", "29.99", "34.13", "30.93", "34.11", "32.
       asthma_visit_rate)
   )
 
+# Please make a note of what the gsub function does
+
 ```
 
 
@@ -188,6 +190,8 @@ vaccination_plot <- ggplot(
   theme_minimal()
 
 vaccination_plot
+
+# Write what the geom_hline does.
 
 ```
 
@@ -292,7 +296,7 @@ Answer each question in complete sentences.
 
 Why is reproducibility important in public health research and practice?
 
-**Reproducibility is important in public health research and practice, because all information readily provided to the general public should be accruate, transparent, and usable. It allows others to verify the results and understand how conclusions were reached.  **  
+**Reproducibility is important in public health research and practice, because all information readily provided to the general public should be accurate, transparent, and usable. It allows others to verify the results and understand how conclusions were reached.**  
 
 ## Question 2
 
