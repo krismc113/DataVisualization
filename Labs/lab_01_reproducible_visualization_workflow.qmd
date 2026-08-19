@@ -90,7 +90,7 @@ asthma_visit_rate = c("30.35", "32.07", "29.99", "34.13", "30.93", "34.11", "32.
       asthma_visit_rate)
   )
 
-# Please make a note of what the gsub function does
+#gsub means global substitution; used to find something in a variable and replace it
 
 ```
 
@@ -191,7 +191,7 @@ vaccination_plot <- ggplot(
 
 vaccination_plot
 
-# Write what the geom_hline does.
+# geomhline: Draws horizontal line to show mean, target, or reference
 
 ```
 
