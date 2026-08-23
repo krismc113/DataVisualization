@@ -176,6 +176,7 @@ vaccination_plot <- ggplot(
   geom_col(
     fill= "blue"
     ) +
+  coord_flip() +
   geom_hline(
     yintercept = 80, 
              linetype = "dashed"
