@@ -1,0 +1,167 @@
+---
+title: "Lab 4: Visualization Redesign and Accessibility"
+author: "Kristen McDaniel"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Setup
+
+```{r, load-packages}
+
+library(tidyverse)
+library(gapminder)
+
+```
+
+
+# Part 1: Poor Graph
+
+Using 2007 Gapminder data, create a graph with at least five intentional weaknesses.
+
+```{r, poor-graph}
+
+gm2007 <- gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  summarise(population = sum(pop))
+
+poorgraph <- ggplot(
+  gm2007,
+  aes(
+    x = continent,
+    y = population,
+    fill = continent
+   )
+  ) +
+  geom_col(
+    width = 0.9
+    ) +
+  scale_y_continuous(
+    limits = c(500000000, 1500000000),
+    breaks = seq(500000000, 1500000000, by = 2500000000)
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Africa" = "red",
+      "Americas" = "limegreen",
+      "Asia" = "purple",
+      "Europe" = "orange",
+      "Oceania" = "cyan"
+    )
+  ) +
+  geom_text(
+    aes(label = population),
+    vjust = -0.3,
+    size = 3
+  ) +
+   labs(
+    title = "Population",
+    x = "Continent",
+    y = "Population"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(
+      angle = 90,
+      hjust = 1
+    )
+  )
+
+poorgraph
+
+```
+
+# Part 2: Critique
+
+**The graph is misleading because the y-axis starts at 500 million instead of 0, which makes the differences in population appear smaller than they actually are. The bright colors, rotated labels, unnecessary legend, and vague title also make the graph cluttered and difficult to interpret.**  
+
+# Part 3: Redesign
+
+Create an improved graph with a finding-focused title, meaningful order, accessible design, clear labels, reduced clutter, alt text, and source.
+
+```{r, redesigned-graph}
+
+redesignedgraph <- ggplot(
+  gm2007,
+  aes(
+    x = continent,
+    y = population,
+    fill = continent
+   )
+  ) +
+  geom_col() +
+  geom_text(
+    aes(label = scales::comma(population)),
+    vjust = -0.3,
+  ) +
+  scale_y_continuous(
+    labels = scales::comma
+  ) +
+   labs(
+    title = "Population by Continent in 2007",
+    x = "Continent",
+    y = "Population"
+  ) +
+  theme_minimal()
+
+redesignedgraph
+
+```
+
+# Part 4: Highlighting
+
+```{r, highlight-version}
+
+gmAfrica <- gapminder %>%
+  filter(continent == "Africa", year == 2007)
+
+highlightedgraph <- ggplot(
+  gmAfrica,
+  aes(
+    x = reorder(country, pop),
+    y = pop,
+    fill = country
+   )
+  ) +
+  geom_col() +
+  scale_y_continuous(
+    labels = scales::comma
+  ) +
+   coord_flip() +
+   labs(
+    title = "Population by Country in Africa, 2007",
+    x = "Country",
+    y = "Population"
+  ) +
+  guides(
+    fill = "none"
+    ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 18, face = "bold"),
+    axis.text.y = element_text(size = 5, face = "bold"),
+    axis.text.x = element_text(size = 9, face = "bold"),
+    legend.position = "none"
+  ) 
+
+highlightedgraph
+
+```
+
+# Part 5: Accessibility Review
+
+**The graph has good contrast between the bars and background, and the large title and axis labels are readable. However, the use of many different colors is not necessary and could make the graph difficult to interpret in grayscale or for viewers with color-vision deficiencies.**  
+
+# Part 6: Published Graphic Critique
+
+![Published Graphic Critique](eyecare.webp)
+
+**The graph clearly shows the growth of the eye care services market from 2023–2033 and uses a consistent color scheme. However, the stacked bars make it difficult to compare individual service categories across years, and the large amount of unused space makes the graph less efficient visually.**
