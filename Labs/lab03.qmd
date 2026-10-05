@@ -1,0 +1,278 @@
+---
+title: "Lab 3: Data Wrangling for Visualization"
+author: Kristen McDaniel
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Setup
+
+```{r, load-packages}
+
+library(tidyverse)
+
+```
+
+# Part 1: Create Raw Data
+
+```{r, raw-data}
+
+raw_health_data <- data.frame(
+  county = c(
+    "Fulton", "DeKalb", "Cobb", "Gwinnett",
+    "Clayton", "Henry", "Cherokee", "Fulton", "Douglas"
+  ),
+  region = c(
+    "Central", "Central", "North", "North",
+    "South", "South", "North", "Central", "West"
+  ),
+  population_2023 = c(
+    1063937, 764597, 776781, 975353,
+    303435, 245684, 316837, 1063937, 147843
+  ),
+  cases_2023 = c(
+    8420, 5210, 4385, 6120,
+    2745, 1987, 1765, 8420, 1248
+  ),
+  population_2024 = c(
+    1072000, 770100, 783500, 987600,
+    307200, 251300, 323500, 1072000, 151200
+  ),
+  cases_2024 = c(
+    8650, 5385, 4520, 6355,
+    2810, 2075, NA, 8650, 1315
+  )
+)
+
+raw_health_data
+
+```
+
+# Part 2: Diagnose
+
+```{r, diagnose-data}
+
+glimpse(raw_health_data)
+
+```
+
+# Part 3: Remove Duplicates
+
+```{r, remove-duplicates}
+
+health_data_clean <- raw_health_data %>%
+  distinct(county, .keep_all = TRUE)
+
+```
+
+# Part 4: Reshape Long
+
+```{r, reshape-long}
+
+health_data_clean1 <- health_data_clean %>% 
+  pivot_longer(cols = c(population_2023, cases_2023, population_2024, cases_2024),
+    names_to = c(".value", "year"),
+    names_pattern = "(population|cases)_(2023|2024)"
+  )
+
+```
+
+# Part 5: Calculate Rates
+
+```{r, calculate-rates}
+
+health_data_clean2 <- health_data_clean1 %>%
+  mutate(
+    cases_thousands = cases / 1e3
+  )
+
+```
+
+# Part 6: Summarize
+
+```{r, summarize-region}
+
+mean_rate <- health_data_clean2 %>% group_by(region, year) %>%
+  summarise(
+    mean_cases = mean(cases_thousands, na.rm = TRUE)
+  )
+
+```
+
+# Part 7: Join Contextual Data
+
+```{r}
+
+rural_status <- data.frame(
+  county = c("Fulton", "DeKalb", "Cobb", "Gwinnett",
+             "Clayton", "Henry", "Cherokee", "Douglas"),
+  rural_status = c("Urban", "Urban", "Urban", "Suburban",
+                   "Urban", "Suburban", "Suburban", "Rural")
+)
+
+# check duplicates in rural-status table
+rural_status %>%
+  count(county) %>%
+  filter(n > 1)
+
+# join contextual data
+health_data_joined <- health_data_clean2 %>%
+  left_join(rural_status, by = "county")
+
+# check unmatched rows
+health_data_joined %>%
+  filter(is.na(rural_status)) %>%
+  select(county)
+
+# check row counts before and after join
+nrow(health_data_clean2)
+nrow(health_data_joined)
+
+# joined data
+health_data_joined
+
+```
+
+# Part 8: Visualize
+
+
+```{r, line-graph}
+
+line_graph <- ggplot(
+  mean_rate,
+  aes(
+    x = year,
+    y = mean_cases,
+    color = region,
+    group = region
+   ) 
+  )+
+    geom_line(
+  ) +
+  geom_point(
+    size = 2,
+    alpha = 0.5
+  ) +
+  labs(
+    title = "Mean Health Rate by Region and Year ",
+    x = "Year",
+    y = "Mean Cases",
+    caption = "Data Source: Simulated"
+    ) +
+    theme_minimal()
+
+line_graph
+
+```
+
+```{r, line-save}
+
+ggsave(
+  filename = "../Figures/lab03_line_graph.png",
+  plot = line_graph,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+```
+
+
+# Ranked 2024 county graph
+
+```{r, 2024-graph}
+
+mean_rate1 <- health_data_clean2 %>% group_by(county, year) %>%
+  summarise(
+    mean_cases = mean(cases_thousands, na.rm = TRUE)
+  )
+
+hd2024 <- mean_rate1 %>%
+  filter(year == 2024) %>%
+  ggplot(
+    aes(
+      x = reorder(county, mean_cases),
+      y = mean_cases,
+      color = county
+    )
+  ) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "2024 Mean Cases by County",
+    x = "County",
+    y = "Mean Cases"
+  ) +
+  theme_minimal()
+
+hd2024
+
+```
+```{r, 2024-save}
+
+ggsave(
+  filename = "../Figures/lab03_hd2024.png",
+  plot = hd2024,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+```
+
+
+# Rural-status comparison
+
+```{r, rural-status}
+
+mean_rate2 <- health_data_joined %>% group_by(county,rural_status, year) %>%
+  summarise(
+    mean_cases = mean(cases_thousands, na.rm = TRUE)
+  )
+
+rural_status_graph <- ggplot(
+  mean_rate2, 
+       aes(
+         x = rural_status, 
+         y = mean_cases,
+         color = rural_status
+         )
+  ) +
+  geom_boxplot() +
+  labs(
+    title = "Health Rate by Rural Status",
+    x = "Rural Status",
+    y = "Mean Cases"
+  ) +
+  theme_minimal()
+
+rural_status_graph
+
+```
+```{r, boxplot-save}
+
+ggsave(
+  filename = "../Figures/lab03_rural_status_graph.png",
+  plot = rural_status_graph,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+```
+
+
+
+# Reflection
+
+Explain why long format was useful, what causes row multiplication during joins, and why rates are preferable to counts.
+
+**Long format was useful, because it made the data easier to analyze and visualize across different years. Row multiplication during joins can occur when there are duplicate county names or multiple matching rows in the table being joined. Rates are preferable counts, because they account for differences in population size, which allows for more meaningful comparisons.**
