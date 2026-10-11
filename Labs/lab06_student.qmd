@@ -1,0 +1,25 @@
+---
+title: "Lab 6: Data Storytelling and Final Project Proposal"
+author: Kristen McDaniel
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Part 1: Select a Public Health Issue
+
+The Issue: Access Gaps in Optical Services and Vision Care
+The population affected: Marginalized communities, uninsured and under-insured, children, aging populations
+Why it matters: Without proper access to quality and affordable vision care services, such as eye examinations, diagnostic testings, and more, it can contribute to delayed diagnoses of vision impairments and diseases. If gaps such as insurance coverage, provider availability, and cost were addressed, it could allow for individuals to receive the necessary services to avoid drastic an preventable decline in vision health.
+What evidence may help address it: Surveys that illustrate an individual's vision health seeking behaviors and how that can be impacted by the different social determinants of health, such as insurance coverage, demographics, transportation, etc.
+
+# Part 2: Define the Audience and Action
+
+After viewing this product, community members and public health professionals should understand how social determinants of health, including insurance coverage, cost, transportation, and provider availability, contribute to gaps in access to optical services and vision care, and be prepared to identify barriers and support strategies that improve access to affordable, timely, and quality vision care, particularly for underserved populations.
