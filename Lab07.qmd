@@ -99,7 +99,7 @@ static_plot
 ```{r, save-static-plot}
 
 ggsave(
-  filename = "Figures/lab07_staticplot.png",
+  filename = "lab07_staticplot.png",
   plot = static_plot,
   width = 8,
   height = 6,
