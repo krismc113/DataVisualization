@@ -1,0 +1,180 @@
+---
+title: "Lab 7: Interactive Plotly Visualization"
+author: "Kristen McDaniel"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Learning Objectives
+
+You will convert static `ggplot2` graphics into accessible interactive Plotly products.
+
+# Setup
+
+Load:
+
+- `tidyverse`
+- `gapminder`
+- `plotly`
+- `DT`
+
+```{r, load-packages}
+
+library(tidyverse)
+library(gapminder)
+# install.packages("plotly")
+library(plotly)
+# install.packages("DT")
+library(DT)
+
+```
+
+# Part 1: Prepare Data
+
+Create a 2007 Gapminder dataset and rename the major variables.
+
+```{r, prepare-data}
+
+data <- gapminder %>%
+  filter(year == 2007)
+
+data <- data %>%
+   rename(
+    life_expectancy = lifeExp,
+    population = pop,
+    gdp_per_capita = gdpPercap
+  )
+
+```
+
+# Part 2: Static Baseline
+
+Create a clear static scatterplot of GDP per capita and life expectancy.
+
+```{r, static-plot}
+
+static_plot <- ggplot(
+  data,
+  aes(
+    x = gdp_per_capita,
+    y = life_expectancy,
+    color = continent
+    )
+  ) +
+  geom_point(
+    size = 2,
+    alpha = 0.5
+  ) +
+    geom_smooth(
+      aes(group = 1),
+      method = "lm",
+      se = FALSE,
+      color = "gray30",
+      linewidth = 1
+    ) +
+    scale_x_log10() +
+    scale_color_manual(
+     values = c(
+      "Africa" = "#F8766D",
+      "Americas" = "#7CAE00",
+      "Asia" = "#00BFC4",
+      "Europe" = "#C77CFF",
+      "Oceania" = "#FF61C3"
+     ) 
+  ) +
+  labs(
+    title = "GDP per capita and Life Expectancy in 2007",
+    subtitle = "Relationship between GDP per capita and life expectancy by continent",
+    x = "GDP per capita (log scale)",
+    y = "Life Expectency",
+    caption = "Data Source: Gapminder"
+    )
+
+static_plot
+
+```
+
+## Save
+
+```{r, save-static-plot}
+
+ggsave(
+  filename = "../Figures/lab07_staticplot.png",
+  plot = static_plot,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+```
+
+
+# Part 3: Custom Tooltip
+
+Add tooltip text containing country, continent, life expectancy, GDP per capita, and population.
+
+```{r}
+#| label: tooltip-plot
+
+# Add your code here.
+```
+
+# Part 4: Convert with Plotly
+
+Create a live interactive graphic. Remove the Plotly logo and retain useful controls.
+
+```{r}
+#| label: interactive-scatter
+
+# Add your code here.
+```
+
+# Part 5: Interactive Trend
+
+Calculate continent-level mean life expectancy over time and create an interactive line graph with unified hover.
+
+```{r}
+#| label: interactive-trend
+
+# Add your code here.
+```
+
+# Part 6: Interactive Table
+
+Create a searchable `DT` table with formatted values.
+
+```{r}
+#| label: interactive-table
+
+# Add your code here.
+```
+
+# Part 7: Accessibility Alternative
+
+Provide:
+
+- written summary,
+- static figure,
+- and an accessible table or downloadable output.
+
+# Part 8: Evaluate Interactivity
+
+Explain which interaction supports which user question and whether the added complexity is justified.
+
+**Response:**  
+
+# Part 9: Portfolio
+
+Add the interactive product to the Projects section with instructions and a static alternative.
+
+# Deliverables
+
+Submit the QMD, rendered HTML with working widgets, static alternative, interactive table, evaluation, and portfolio update.
