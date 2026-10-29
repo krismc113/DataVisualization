@@ -1,0 +1,276 @@
+---
+title: "Lab 7"
+author: "Kristen McDaniel"
+format: html
+editor: visual
+---
+
+# Learning Objectives
+
+You will convert static `ggplot2` graphics into accessible interactive Plotly products.
+
+# Setup
+
+Load:
+
+- `tidyverse`
+- `gapminder`
+- `plotly`
+- `DT`
+
+```{r, load-packages}
+
+library(tidyverse)
+library(gapminder)
+# install.packages("plotly")
+library(plotly)
+# install.packages("DT")
+library(DT)
+
+```
+
+# Part 1: Prepare Data
+
+Create a 2007 Gapminder dataset and rename the major variables.
+
+```{r, prepare-data}
+
+data <- gapminder %>%
+  filter(year == 2007)
+
+data <- data %>%
+   rename(
+    life_expectancy = lifeExp,
+    population = pop,
+    gdp_per_capita = gdpPercap
+  )
+
+```
+
+# Part 2: Static Baseline
+
+Create a clear static scatterplot of GDP per capita and life expectancy.
+
+```{r, static-plot}
+
+static_plot <- ggplot(
+  data,
+  aes(
+    x = gdp_per_capita,
+    y = life_expectancy,
+    color = continent
+    )
+  ) +
+  geom_point(
+    size = 2,
+    alpha = 0.5
+  ) +
+    geom_smooth(
+      aes(group = 1),
+      method = "lm",
+      se = FALSE,
+      color = "gray30",
+      linewidth = 1
+    ) +
+    scale_x_log10() +
+    scale_color_manual(
+     values = c(
+      "Africa" = "#F8766D",
+      "Americas" = "#7CAE00",
+      "Asia" = "#00BFC4",
+      "Europe" = "#C77CFF",
+      "Oceania" = "#FF61C3"
+     ) 
+  ) +
+  labs(
+    title = "GDP per capita and Life Expectancy in 2007",
+    subtitle = "Relationship between GDP per capita and life expectancy by continent",
+    x = "GDP per capita (log scale)",
+    y = "Life Expectency",
+    caption = "Data Source: Gapminder"
+    )
+
+static_plot
+
+```
+
+## Save
+
+```{r, save-static-plot}
+
+ggsave(
+  filename = "Figures/lab07_staticplot.png",
+  plot = static_plot,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+```
+
+
+# Part 3: Custom Tooltip
+
+Add tooltip text containing country, continent, life expectancy, GDP per capita, and population.
+
+```{r, tooltip-plot}
+
+tooltip_plot <- ggplot(
+  data,
+  aes(
+    x = gdp_per_capita,
+    y = life_expectancy,
+    color = continent,
+    size = population,
+    text = paste0(
+      "Country: ", country,
+      "<br>Continent: ", continent,
+      "<br>Life expectancy: ", round(life_expectancy, 1), " years",
+      "<br>GDP per capita: $", round(gdp_per_capita, 2),
+      "<br>Population: ", format(population, big.mark = ",")
+    )
+  )
+) +
+  geom_point(
+    alpha = 0.5
+  ) +
+  scale_x_log10() +
+  labs(
+     title = "GDP per capita and Life Expectancy in 2007",
+    subtitle = "Relationship between GDP per capita and life expectancy by continent",
+    x = "GDP per capita (log scale)",
+    y = "Life Expectency",
+    caption = "Data Source: Gapminder"
+    ) +
+  theme_minimal()
+
+tooltip_plot
+
+```
+
+# Part 4: Convert with Plotly
+
+Create a live interactive graphic. Remove the Plotly logo and retain useful controls.
+
+```{r, interactive-scatter}
+
+ggplotly(
+  tooltip_plot,
+  tooltip = "text"
+) %>%
+  config(
+    displaylogo = FALSE,
+    displayModeBar = TRUE,
+    modeBarButtonsToRemoce = c(
+      "lasso2d",
+      "select2d"
+    ),
+    responsive = TRUE
+  )
+
+```
+
+# Part 5: Interactive Trend
+
+Calculate continent-level mean life expectancy over time and create an interactive line graph with unified hover.
+
+```{r, interactive-trend}
+
+life_trend <- gapminder %>%
+  group_by(continent, year) %>%
+  summarise(
+    mean_lifeExp = mean(lifeExp, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+trend_plot <- ggplot(
+  life_trend,
+  aes(
+    x = year,
+    y = mean_lifeExp,
+    color = continent
+  )
+) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Mean Life Expectancy Over Time by Continent",
+    x = "Year",
+    y = "Mean Life Expectancy (years)",
+    color = "Continent"
+  ) +
+  theme_minimal()
+
+ggplotly(trend_plot) %>%
+  layout(
+    hovermode = "x unified"
+  ) %>%
+  config(
+    displaylogo = FALSE,
+    displayModeBar = TRUE,
+    responsive = TRUE
+  )
+
+```
+
+# Part 6: Interactive Table
+
+Create a searchable `DT` table with formatted values.
+
+```{r, interactive-table}
+
+gapminder %>%
+  select(
+    country,
+    continent,
+    year,
+    lifeExp,
+    gdpPercap,
+    pop
+  ) %>%
+  datatable(
+    rownames = FALSE,
+    filter = "top",
+    extensions = "Buttons",
+    options = list(
+      pageLength = 10,
+      scrollX = TRUE,
+      dom = "Bfrtip",
+      buttons = c("copy", "csv", "excel"),
+      order = list(list(0, "asc"))
+    ),
+    colnames = c(
+      "Country",
+      "Continent",
+      "Year",
+      "Life Expectancy",
+      "GDP per Capita",
+      "Population"
+    )
+  ) %>%
+  formatRound(
+    columns = "lifeExp",
+    digits = 1
+  ) %>%
+  formatCurrency(
+    columns = "gdpPercap",
+    currency = "$",
+    digits = 2
+  ) %>%
+  formatRound(
+    columns = "pop",
+    digits = 0,
+    mark = ","
+  )
+
+```
+
+# Part 7: Accessibility Alternative
+
+**The Gapminder dataset allows comparisons of life expectancy, GDP per capita, and population across countries, continents, and years. The scatterplot explores the relationship between economic output and life expectancy, with population represented by point size and continent represented by color. The interactive trend graph summarizes changes in mean life expectancy over time for each continent. Together, these visualizations allow readers to explore geographic differences, compare countries, and examine long-term trends. The static graph and table provide alternatives for readers who cannot or prefer not to use interactive features.**
+
+# Part 8: Evaluate Interactivity
+
+Explain which interaction supports which user question and whether the added complexity is justified.
+
+**Interactivity helps users explore trends, compare continents, and find specific countries. However, too many interactive features can be overwhelming, so they should be included only when they improve understanding.**  
